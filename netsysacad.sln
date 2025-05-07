@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "netsysacad", "netsysacad\netsysacad.csproj", "{B00EA225-C672-4660-8EE9-9E1BFBA9A69D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "netsysacad.Tests", "netsysacad.Tests\netsysacad.Tests.csproj", "{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{B00EA225-C672-4660-8EE9-9E1BFBA9A69D}.Release|x64.Build.0 = Release|Any CPU
 		{B00EA225-C672-4660-8EE9-9E1BFBA9A69D}.Release|x86.ActiveCfg = Release|Any CPU
 		{B00EA225-C672-4660-8EE9-9E1BFBA9A69D}.Release|x86.Build.0 = Release|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Debug|x64.Build.0 = Debug|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Debug|x86.Build.0 = Debug|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Release|x64.ActiveCfg = Release|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Release|x64.Build.0 = Release|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Release|x86.ActiveCfg = Release|Any CPU
+		{1EBED0F2-100C-41C0-8538-397D7AAC3B8E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

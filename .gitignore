@@ -133,4 +133,4 @@ $RECYCLE.BIN/
 _NCrunch*
 
 # Propias proyecto sysacad
-netsysacad/.env
+*.env

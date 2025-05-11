@@ -1,16 +1,12 @@
-using netsysacad.Models;
-namespace netsysacad.Tests;
+using netsysacad.Tests.Helpers;
+namespace netsysacad.Tests.ModelsTests;
 
 public class UniversidadTests
 {
     [Fact]
     public void UniversidadTest()
      {
-        var universidad = new Universidad
-        {
-            Nombre = "UTN", 
-            Sigla = "FRSR"
-        };
+        var universidad = TestDataFactory.CreateUniversidad();
 
         Assert.NotNull(universidad);
         Assert.Equal("UTN",universidad.Nombre);

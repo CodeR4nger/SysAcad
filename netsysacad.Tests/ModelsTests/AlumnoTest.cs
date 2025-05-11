@@ -1,12 +1,9 @@
 using netsysacad.Models;
-namespace netsysacad.Tests;
+namespace netsysacad.Tests.ModelsTests;
 
 public class AlumnoTests
 {
-    [Fact]
-    public void AlumnoTest()
-     {
-        var alumno = new Alumno
+    private static Alumno CreateAlumno() => new()
         {
             Apellido = "Gomez", 
             Nombre = "Juan", 
@@ -16,7 +13,11 @@ public class AlumnoTests
             Sexo = "M", 
             NroLegajo = 1001, 
             FechaIngreso = new DateTime(2020, 3, 1)
-        };
+    };
+    [Fact]
+    public void AlumnoTest()
+     {
+        var alumno = CreateAlumno();
         Assert.NotNull(alumno);
         Assert.Equal("Gomez", alumno.Apellido);
         Assert.Equal("Juan", alumno.Nombre);

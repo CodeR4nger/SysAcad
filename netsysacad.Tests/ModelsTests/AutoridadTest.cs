@@ -1,19 +1,12 @@
-using netsysacad.Models;
-namespace netsysacad.Tests;
+using netsysacad.Tests.Helpers;
+namespace netsysacad.Tests.ModelsTests;
 
 public class AutoridadTests
 {
     [Fact]
     public void AutoridadTest()
      {
-        var autoridad = new Autoridad
-        {
-            Nombre = "PruebaAutoridad", 
-            Cargo = "rrhh",
-            Telefono = "1234553",
-            Email = "hguthg@gmail.com"
-        };
-
+        var autoridad =  TestDataFactory.CreateAutoridad();
         Assert.NotNull(autoridad);
         Assert.Equal("PruebaAutoridad",autoridad.Nombre);
         Assert.Equal("rrhh",autoridad.Cargo);

@@ -10,5 +10,7 @@ namespace netsysacad.Models {
         public required string Telefono { get; set;}
         public required string Contacto { get; set;}
         public required string Email { get; set;}
+        public required Universidad Universidad { get; set;}
+        public required List<Autoridad> Autoridades { get; set;}
     }
 }

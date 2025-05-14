@@ -5,13 +5,14 @@ using netsysacad.Models;
 
 namespace netsysacad.Data
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
     {
         public DbSet<Alumno> Alumnos { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Autoridad> Autoridades { get; set; }
-
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) {}
+        public DbSet<Cargo> Cargos { get; set; }
+        public DbSet<CategoriaCargo> CategoriasCargo { get; set; }
+        public DbSet<TipoDedicacion> TiposDedicacion { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

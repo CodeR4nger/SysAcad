@@ -8,6 +8,7 @@ namespace netsysacad.Data
     public class DatabaseContext : DbContext
     {
         public DbSet<Alumno> Alumnos { get; set; }
+        public DbSet<Area> Areas { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) {}
 

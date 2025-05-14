@@ -24,9 +24,10 @@ public class AreaTests : TestBase
     public void AreaTest()
      {
         var area = CreateArea();
+        CheckArea(area);
 
     }
-        [Fact]
+    [Fact]
     public void CanCreateArea() 
     {
         var area = CreateArea();

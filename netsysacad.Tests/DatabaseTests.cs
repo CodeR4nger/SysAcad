@@ -1,31 +1,38 @@
-using Npgsql;
+using Microsoft.EntityFrameworkCore;
+using netsysacad.Data;
 using DotNetEnv;
 
-namespace netsysacad.Tests;
-
-public class DatabaseTests : IDisposable
+namespace netsysacad.Tests
 {
-    private readonly NpgsqlConnection _connection;
-    public DatabaseTests()
+    public class DatabaseTests : IDisposable
     {
-        Env.Load();
-        string connectionString = $"Host={Env.GetString("POSTGRES_HOST")};" +
-                                $"Username={Env.GetString("POSTGRES_USER")};" +
-                                $"Password={Env.GetString("POSTGRES_PASSWORD")};" +
-                                $"Database={Env.GetString("POSTGRES_DB")}";
-        _connection = new NpgsqlConnection(connectionString);
-        _connection.Open();
-    }
-    public void Dispose()
-    {
-        _connection.Close();
-        _connection.Dispose();
-    }
-    [Fact]
-    public void TestDbConnection()
-    {
-        using var cmd = new NpgsqlCommand("SELECT 'Hello world';", _connection);
-        var result = cmd.ExecuteScalar()?.ToString();
-        Assert.Equal("Hello world", result);
+        private readonly DatabaseContext _db;
+
+        public DatabaseTests()
+        {
+            Env.Load();
+
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseNpgsql($"Host={Env.GetString("POSTGRES_HOST")};" +
+                            $"Username={Env.GetString("POSTGRES_USER")};" +
+                            $"Password={Env.GetString("POSTGRES_PASSWORD")};" +
+                            $"Database={Env.GetString("POSTGRES_DB")};") 
+                .Options;
+
+            _db = new DatabaseContext(options); 
+        }
+
+        public void Dispose()
+        {
+            _db.Dispose();
+        }
+
+        [Fact]
+        public async Task TestDbConnection()
+        {
+
+            var result = await _db.Database.ExecuteSqlRawAsync("SELECT 1");
+            Assert.Equal(-1, result); 
+        }
     }
 }

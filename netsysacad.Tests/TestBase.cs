@@ -4,35 +4,89 @@ using netsysacad.Data;
 using DotNetEnv;
 namespace netsysacad.Tests;
 
-
-public abstract class TestBase : IDisposable
+public abstract class EntityTestBase<TEntity, TService> : IDisposable
+    where TEntity : class
+    where TService : class
 {
     protected readonly DatabaseContext Context;
     protected readonly IDbContextTransaction Transaction;
-    static TestBase()
+    protected readonly TService Service;
+    static EntityTestBase()
     {
         Env.Load();
     }
-    protected TestBase()
+    protected EntityTestBase(Func<DatabaseContext, TService> serviceFactory)
     {
-        string connectionString = $"Host={Env.GetString("POSTGRES_HOST")};" +
-                                    $"Username={Env.GetString("POSTGRES_USER")};" +
-                                    $"Password={Env.GetString("POSTGRES_PASSWORD")};" +
-                                    $"Database={Env.GetString("POSTGRES_DB")};";
-
+        var connectionString = $"Host={Env.GetString("POSTGRES_HOST")};" +
+                               $"Username={Env.GetString("POSTGRES_USER")};" +
+                               $"Password={Env.GetString("POSTGRES_PASSWORD")};" +
+                               $"Database={Env.GetString("POSTGRES_DB")};";
         var options = new DbContextOptionsBuilder<DatabaseContext>()
             .UseNpgsql(connectionString)
             .Options;
         Context = new DatabaseContext(options);
         Context.Database.EnsureCreated();
-
         Transaction = Context.Database.BeginTransaction();
+        Service = serviceFactory(Context);
     }
-
     public void Dispose()
     {
         Transaction.Rollback();
         Transaction.Dispose();
         Context.Dispose();
+    }
+
+    protected abstract TEntity CreateEntity();
+    protected abstract void CheckEntity(TEntity entity);
+    protected abstract TEntity Create(TEntity entity);
+    protected abstract TEntity GetById(int id);
+    protected abstract IList<TEntity> GetAll();
+    protected abstract TEntity Update(TEntity entity);
+    protected abstract bool Delete(int id);
+    protected abstract int GetId(TEntity entity);
+    protected abstract void ModifyEntity(TEntity entity);
+    protected abstract void CheckUpdatedEntity(TEntity entity);
+    // Reusable CRUD tests
+    [Fact]
+    public void CanCreateEntity()
+    {
+        var entity = CreateEntity();
+        var created = Create(entity);
+        CheckEntity(created);
+        Assert.True(GetId(created) > 0);
+    }
+    [Fact]
+    public void CanReadEntity()
+    {
+        var entity = Create(CreateEntity());
+        var fetched = GetById(GetId(entity));
+        CheckEntity(fetched);
+    }
+    [Fact]
+    public void CanReadAllEntities()
+    {
+        Create(CreateEntity());
+        Create(CreateEntity());
+        var all = GetAll();
+        Assert.True(all.Count >= 2);
+    }
+    [Fact]
+    public void CanUpdateEntity()
+    {
+        var entity = Create(CreateEntity());
+        ModifyEntity(entity);
+        var updated = Update(entity);
+        Assert.Equal(GetId(entity), GetId(updated));
+        var fetched = GetById(GetId(entity));
+        CheckUpdatedEntity(fetched);
+    }
+    [Fact]
+    public void CanDeleteEntity()
+    {
+        var entity = Create(CreateEntity());
+        var deleted = Delete(GetId(entity));
+        Assert.True(deleted);
+        var found = GetById(GetId(entity));
+        Assert.Null(found);
     }
 }

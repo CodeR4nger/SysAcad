@@ -2,83 +2,41 @@ using netsysacad.Models;
 using netsysacad.Repositories;
 using netsysacad.Services;
 using netsysacad.Tests.Helpers;
-namespace netsysacad.Tests.ModelsTests;
 
-public class CargoTests : TestBase
+namespace netsysacad.Tests.ModelsTests
 {
-    protected readonly CargoService CargoService;
-    public CargoTests()
+    public class CargoTests : EntityTestBase<Cargo, CargoService>
     {
-        var cargoRepo = new CargoRepository(Context);
-        CargoService = new CargoService(cargoRepo);  
-    }
-    private static void CheckCargo(Cargo cargo)
-    {
-        Assert.NotNull(cargo);
-        Assert.Equal("Profesor Titular", cargo.Nombre);
-        Assert.Equal(100, cargo.Puntos);
-        Assert.NotNull(cargo.CategoriaCargo);
-        Assert.Equal("Administrativo", cargo.CategoriaCargo.Nombre);
-        Assert.NotNull(cargo.TipoDedicacion);
-        Assert.Equal("Exclusiva", cargo.TipoDedicacion.Nombre);
-        Assert.Equal("Dedicación exclusiva a la docencia e investigación", cargo.TipoDedicacion.Observacion);
-    }
-    [Fact]
-    public void CargoTest()
-    {
-        var cargo = TestDataFactory.CreateCargo();
-        CheckCargo(cargo);
-    }
-    [Fact]
-    public void CanCreateCargo() 
-    {
-        var cargo = TestDataFactory.CreateCargo();
-        var createdCargo = CargoService.Create(cargo);
-        CheckCargo(createdCargo);
-        Assert.True(createdCargo.Id > 0);
+        public CargoTests()
+            : base(ctx => new CargoService(new CargoRepository(ctx))) { }
 
-    }
-    [Fact]
-    public void CanReadCargo() 
-    {
-        var cargo = TestDataFactory.CreateCargo();
-        var createdCargo = CargoService.Create(cargo);
-        var searchedCargo = CargoService.SearchById(createdCargo.Id);
-        Assert.Equal(createdCargo.Id,searchedCargo.Id);
-        CheckCargo(searchedCargo);
-    }
-    [Fact]
-    public void CanReadAllCargoes() 
-    {
-        var cargo1 = TestDataFactory.CreateCargo();
-        var cargo2 = TestDataFactory.CreateCargo();
-        CargoService.Create(cargo1);
-        CargoService.Create(cargo2);
-        var cargoes = CargoService.SearchAll();
-        Assert.NotEmpty(cargoes);
-        Assert.Equal(2, cargoes.Count);
-        CheckCargo(cargoes[0]);
-    }
-    [Fact]
-    public void CanUpdateCargo() 
-    {
-        var cargo = TestDataFactory.CreateCargo();
-        CargoService.Create(cargo);
-        cargo.Nombre = "Suplente";
+        protected override Cargo CreateEntity() => TestDataFactory.CreateCargo();
 
-        var updatedCargo = CargoService.Update(cargo);
+        protected override void CheckEntity(Cargo cargo)
+        {
+            Assert.NotNull(cargo);
+            Assert.Equal("Profesor Titular", cargo.Nombre);
+            Assert.Equal(100, cargo.Puntos);
+            Assert.NotNull(cargo.CategoriaCargo);
+            Assert.Equal("Administrativo", cargo.CategoriaCargo.Nombre);
+            Assert.NotNull(cargo.TipoDedicacion);
+            Assert.Equal("Exclusiva", cargo.TipoDedicacion.Nombre);
+            Assert.Equal("Dedicación exclusiva a la docencia e investigación", cargo.TipoDedicacion.Observacion);
+        }
 
-        Assert.Equal("Suplente",updatedCargo.Nombre);
-        Assert.Equal(cargo.Id,updatedCargo.Id);
-    }
-    [Fact]
-    public void CanDeleteCargo() 
-    {
-        var cargo = TestDataFactory.CreateCargo();
-        var createdCargo = CargoService.Create(cargo);
-        var wasDeleted = CargoService.DeleteById(createdCargo.Id);
-        Assert.True(wasDeleted);
-        var searchedCargo = CargoService.SearchById(createdCargo.Id);
-        Assert.Null(searchedCargo);
+        protected override Cargo Create(Cargo entity) => Service.Create(entity);
+        protected override Cargo GetById(int id) => Service.SearchById(id);
+        protected override IList<Cargo> GetAll() => Service.SearchAll();
+        protected override Cargo Update(Cargo entity) => Service.Update(entity);
+        protected override bool Delete(int id) => Service.DeleteById(id);
+        protected override int GetId(Cargo entity) => entity.Id;
+        protected override void ModifyEntity(Cargo entity)
+        {
+            entity.Nombre = "Suplente";
+        }
+        protected override void CheckUpdatedEntity(Cargo entity)
+        {
+            Assert.Equal("Suplente", entity.Nombre);
+        }
     }
 }

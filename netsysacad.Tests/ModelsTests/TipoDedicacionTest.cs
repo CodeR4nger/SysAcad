@@ -3,78 +3,34 @@ using netsysacad.Repositories;
 using netsysacad.Services;
 using netsysacad.Models;
 
-namespace netsysacad.Tests.ModelsTests;
-
-public class TipoDedicacionTests : TestBase
+namespace netsysacad.Tests.ModelsTests
 {
-    protected readonly TipoDedicacionService TipoDedicacionService;
-    public TipoDedicacionTests()
+    public class TipoDedicacionTests : EntityTestBase<TipoDedicacion, TipoDedicacionService>
     {
-        var tipoDedicacionRepo = new TipoDedicacionRepository(Context);
-        TipoDedicacionService = new TipoDedicacionService(tipoDedicacionRepo);  
-    }
-    private static void CheckTipoDedicacion(TipoDedicacion tipoDedicacion)
-    {
-        Assert.Equal("Exclusiva",tipoDedicacion.Nombre);
-        Assert.Equal("Dedicación exclusiva a la docencia e investigación", tipoDedicacion.Observacion);
-    }
-    [Fact]
-    public void TipoDedicacionTest()
-     {
-        var tipoDedicacion = TestDataFactory.CreateTipoDedicacion();
+        public TipoDedicacionTests()
+            : base(ctx => new TipoDedicacionService(new TipoDedicacionRepository(ctx))) { }
 
-        Assert.NotNull(tipoDedicacion);
-    }
-    [Fact]
-    public void CanCreateTipoDedicacion() 
-    {
-        var tipoDedicacion = TestDataFactory.CreateTipoDedicacion();
-        var createdTipoDedicacion = TipoDedicacionService.Create(tipoDedicacion);
-        CheckTipoDedicacion(createdTipoDedicacion);
-        Assert.True(createdTipoDedicacion.Id > 0);
+        protected override TipoDedicacion CreateEntity() => TestDataFactory.CreateTipoDedicacion();
 
-    }
-    [Fact]
-    public void CanReadTipoDedicacion() 
-    {
-        var tipoDedicacion = TestDataFactory.CreateTipoDedicacion();
-        var createdTipoDedicacion = TipoDedicacionService.Create(tipoDedicacion);
-        var searchedTipoDedicacion = TipoDedicacionService.SearchById(createdTipoDedicacion.Id);
-        Assert.Equal(createdTipoDedicacion.Id,searchedTipoDedicacion.Id);
-        CheckTipoDedicacion(searchedTipoDedicacion);
-    }
-    [Fact]
-    public void CanReadAllTiposDedicacion() 
-    {
-        var tipoDedicacion1 = TestDataFactory.CreateTipoDedicacion();
-        var tipoDedicacion2 = TestDataFactory.CreateTipoDedicacion();
-        TipoDedicacionService.Create(tipoDedicacion1);
-        TipoDedicacionService.Create(tipoDedicacion2);
-        var tipoDedicacions = TipoDedicacionService.SearchAll();
-        Assert.NotEmpty(tipoDedicacions);
-        Assert.Equal(2, tipoDedicacions.Count);
-        CheckTipoDedicacion(tipoDedicacions[0]);
-    }
-    [Fact]
-    public void CanUpdateTiposDedicacion() 
-    {
-        var tipoDedicacion = TestDataFactory.CreateTipoDedicacion();
-        TipoDedicacionService.Create(tipoDedicacion);
-        tipoDedicacion.Nombre = "Educativo";
+        protected override void CheckEntity(TipoDedicacion tipoDedicacion)
+        {
+            Assert.Equal("Exclusiva",tipoDedicacion.Nombre);
+            Assert.Equal("Dedicación exclusiva a la docencia e investigación", tipoDedicacion.Observacion);
+        }
 
-        var updatedTipoDedicacion = TipoDedicacionService.Update(tipoDedicacion);
-
-        Assert.Equal("Educativo",updatedTipoDedicacion.Nombre);
-        Assert.Equal(tipoDedicacion.Id,updatedTipoDedicacion.Id);
-    }
-    [Fact]
-    public void CanDeleteTipoDedicacion() 
-    {
-        var tipoDedicacion = TestDataFactory.CreateTipoDedicacion();
-        var createdTipoDedicacion = TipoDedicacionService.Create(tipoDedicacion);
-        var wasDeleted = TipoDedicacionService.DeleteById(createdTipoDedicacion.Id);
-        Assert.True(wasDeleted);
-        var searchedTipoDedicacion = TipoDedicacionService.SearchById(createdTipoDedicacion.Id);
-        Assert.Null(searchedTipoDedicacion);
+        protected override TipoDedicacion Create(TipoDedicacion entity) => Service.Create(entity);
+        protected override TipoDedicacion GetById(int id) => Service.SearchById(id);
+        protected override IList<TipoDedicacion> GetAll() => Service.SearchAll();
+        protected override TipoDedicacion Update(TipoDedicacion entity) => Service.Update(entity);
+        protected override bool Delete(int id) => Service.DeleteById(id);
+        protected override int GetId(TipoDedicacion entity) => entity.Id;
+        protected override void ModifyEntity(TipoDedicacion entity)
+        {
+            entity.Nombre = "General";
+        }
+        protected override void CheckUpdatedEntity(TipoDedicacion entity)
+        {
+            Assert.Equal("General", entity.Nombre);
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace netsysacad.Tests.Helpers;
         public static Autoridad CreateAutoridad() => new()
         {
             Nombre = "PruebaAutoridad", 
-            Cargo = "rrhh",
+            Cargo = CreateCargo(),
             Telefono = "1234553",
             Email = "hguthg@gmail.com"
         };

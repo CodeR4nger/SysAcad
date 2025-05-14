@@ -7,8 +7,9 @@ namespace netsysacad.Models {
         public int Id { get; set; }
         [Column(TypeName ="varchar(50)")]
         public required string Nombre { get; set;}
-        [Column(TypeName ="varchar(50)")]
-        public required string Cargo { get; set;}
+        public int CargoId { get; set; }
+        [ForeignKey("CargoId")]
+        public required Cargo Cargo { get; set;}
         [Column(TypeName ="varchar(50)")]
         public required string Telefono { get; set;}
         [Column(TypeName ="varchar(100)")]

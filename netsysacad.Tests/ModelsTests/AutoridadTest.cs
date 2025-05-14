@@ -16,7 +16,15 @@ public class AutoridadTests : TestBase
     {
         Assert.NotNull(autoridad);
         Assert.Equal("PruebaAutoridad",autoridad.Nombre);
-        Assert.Equal("rrhh",autoridad.Cargo);
+        Assert.NotNull(autoridad.Cargo);
+        Assert.NotNull(autoridad.Cargo);
+        Assert.Equal("Profesor Titular", autoridad.Cargo.Nombre);
+        Assert.Equal(100, autoridad.Cargo.Puntos);
+        Assert.NotNull(autoridad.Cargo.CategoriaCargo);
+        Assert.Equal("Administrativo", autoridad.Cargo.CategoriaCargo.Nombre);
+        Assert.NotNull(autoridad.Cargo.TipoDedicacion);
+        Assert.Equal("Exclusiva", autoridad.Cargo.TipoDedicacion.Nombre);
+        Assert.Equal("Dedicación exclusiva a la docencia e investigación", autoridad.Cargo.TipoDedicacion.Observacion);
         Assert.Equal("1234553",autoridad.Telefono);
         Assert.Equal("hguthg@gmail.com",autoridad.Email);
     }

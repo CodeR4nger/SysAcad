@@ -12,7 +12,7 @@ public class AlumnoTests : TestBase
         AlumnoService = new AlumnoService(alumnoRepo);  
     }
     private static Alumno CreateAlumno() => new()
-        {
+    {
             Apellido = "Gomez", 
             Nombre = "Juan", 
             NroDocumento = "12345678", 

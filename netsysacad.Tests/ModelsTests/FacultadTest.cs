@@ -28,7 +28,14 @@ public class FacultadTests
         Assert.Single(facultad.Autoridades);
         Assert.NotNull(facultad.Autoridades[0]);
         Assert.Equal("PruebaAutoridad",facultad.Autoridades[0].Nombre);
-        Assert.Equal("rrhh",facultad.Autoridades[0].Cargo);
+        Assert.NotNull(facultad.Autoridades[0].Cargo);
+        Assert.Equal("Profesor Titular", facultad.Autoridades[0].Cargo.Nombre);
+        Assert.Equal(100, facultad.Autoridades[0].Cargo.Puntos);
+        Assert.NotNull(facultad.Autoridades[0].Cargo.CategoriaCargo);
+        Assert.Equal("Administrativo", facultad.Autoridades[0].Cargo.CategoriaCargo.Nombre);
+        Assert.NotNull(facultad.Autoridades[0].Cargo.TipoDedicacion);
+        Assert.Equal("Exclusiva", facultad.Autoridades[0].Cargo.TipoDedicacion.Nombre);
+        Assert.Equal("Dedicación exclusiva a la docencia e investigación", facultad.Autoridades[0].Cargo.TipoDedicacion.Observacion);
         Assert.Equal("1234553",facultad.Autoridades[0].Telefono);
         Assert.Equal("hguthg@gmail.com",facultad.Autoridades[0].Email);
     }

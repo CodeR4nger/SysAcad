@@ -1,15 +1,37 @@
+using netsysacad.Models;
+using netsysacad.Repositories;
+using netsysacad.Services;
 using netsysacad.Tests.Helpers;
-namespace netsysacad.Tests.ModelsTests;
 
-public class UniversidadTests
+namespace netsysacad.Tests.ModelsTests
 {
-    [Fact]
-    public void UniversidadTest()
-     {
-        var universidad = TestDataFactory.CreateUniversidad();
+    public class UniversidadTests : EntityTestBase<Universidad, UniversidadService>
+    {
+        public UniversidadTests()
+            : base(ctx => new UniversidadService(new UniversidadRepository(ctx))) { }
 
-        Assert.NotNull(universidad);
-        Assert.Equal("UTN",universidad.Nombre);
-        Assert.Equal("FRSR",universidad.Sigla);
+        protected override Universidad CreateEntity() => TestDataFactory.CreateUniversidad();
+
+        protected override void CheckEntity(Universidad universidad)
+        {
+            Assert.NotNull(universidad);
+            Assert.Equal("UTN",universidad.Nombre);
+            Assert.Equal("FRSR",universidad.Sigla);
+        }
+
+        protected override Universidad Create(Universidad entity) => Service.Create(entity);
+        protected override Universidad? GetById(int id) => Service.SearchById(id);
+        protected override IList<Universidad> GetAll() => Service.SearchAll();
+        protected override Universidad Update(Universidad entity) => Service.Update(entity);
+        protected override bool Delete(int id) => Service.DeleteById(id);
+        protected override int GetId(Universidad entity) => entity.Id;
+        protected override void ModifyEntity(Universidad entity)
+        {
+            entity.Sigla = "FRM";
+        }
+        protected override void CheckUpdatedEntity(Universidad entity)
+        {
+            Assert.Equal("FRM", entity.Sigla);
+        }
     }
 }

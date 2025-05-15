@@ -16,6 +16,7 @@ namespace netsysacad.Data
         public DbSet<Departamento> Departamentos { get; set; }
         public DbSet<Grado> Grados { get; set; }
         public DbSet<Grupo> Grupos { get; set; }
+        public DbSet<Universidad> Universidades { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

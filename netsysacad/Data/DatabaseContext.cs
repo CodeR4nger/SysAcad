@@ -13,6 +13,7 @@ namespace netsysacad.Data
         public DbSet<Cargo> Cargos { get; set; }
         public DbSet<CategoriaCargo> CategoriasCargo { get; set; }
         public DbSet<TipoDedicacion> TiposDedicacion { get; set; }
+        public DbSet<Departamento> Departamentos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

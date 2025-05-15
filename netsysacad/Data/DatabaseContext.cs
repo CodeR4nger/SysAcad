@@ -17,20 +17,6 @@ namespace netsysacad.Data
         public DbSet<Grado> Grados { get; set; }
         public DbSet<Grupo> Grupos { get; set; }
         public DbSet<Universidad> Universidades { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                Env.Load();
-                string connectionString = $"Host={Env.GetString("POSTGRES_HOST")};" +
-                                          $"Username={Env.GetString("POSTGRES_USER")};" +
-                                          $"Password={Env.GetString("POSTGRES_PASSWORD")};" +
-                                          $"Database={Env.GetString("POSTGRES_DB")};";
-
-                optionsBuilder.UseNpgsql(connectionString);
-            }
-        }
     }
 
         

@@ -2,18 +2,12 @@ using netsysacad.Models;
 using netsysacad.Repositories;
 namespace netsysacad.Services;
 
-public class CargoService
+
+///<summary> Servicio para la entidad Cargo. </summary>
+
+public class CargoService : BaseService<Cargo>
 {
-    private readonly CargoRepository _repository;
-
-    public CargoService(CargoRepository repository)
+    public CargoService(CargoRepository repository) : base(repository)
     {
-        _repository = repository;
     }
-
-    public Cargo Create(Cargo cargo) => _repository.Create(cargo);
-    public Cargo SearchById(int id) => _repository.SearchById(id);
-    public List<Cargo> SearchAll() => _repository.SearchAll();
-    public Cargo Update(Cargo cargo) => _repository.Update(cargo);
-    public bool DeleteById(int id) => _repository.DeleteById(id);
 }

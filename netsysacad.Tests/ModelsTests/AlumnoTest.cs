@@ -35,7 +35,7 @@ namespace netsysacad.Tests.ModelsTests
         }
 
         protected override Alumno Create(Alumno entity) => Service.Create(entity);
-        protected override Alumno GetById(int id) => Service.SearchById(id);
+        protected override Alumno? GetById(int id) => Service.SearchById(id);
         protected override IList<Alumno> GetAll() => Service.SearchAll();
         protected override Alumno Update(Alumno entity) => Service.Update(entity);
         protected override bool Delete(int id) => Service.DeleteById(id);

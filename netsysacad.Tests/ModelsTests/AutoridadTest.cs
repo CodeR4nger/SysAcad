@@ -31,7 +31,7 @@ namespace netsysacad.Tests.ModelsTests
         }
 
         protected override Autoridad Create(Autoridad entity) => Service.Create(entity);
-        protected override Autoridad GetById(int id) => Service.SearchById(id);
+        protected override Autoridad? GetById(int id) => Service.SearchById(id);
         protected override IList<Autoridad> GetAll() => Service.SearchAll();
         protected override Autoridad Update(Autoridad entity) => Service.Update(entity);
         protected override bool Delete(int id) => Service.DeleteById(id);

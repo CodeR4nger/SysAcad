@@ -19,7 +19,7 @@ namespace netsysacad.Tests.ModelsTests
         }
 
         protected override TipoDedicacion Create(TipoDedicacion entity) => Service.Create(entity);
-        protected override TipoDedicacion GetById(int id) => Service.SearchById(id);
+        protected override TipoDedicacion? GetById(int id) => Service.SearchById(id);
         protected override IList<TipoDedicacion> GetAll() => Service.SearchAll();
         protected override TipoDedicacion Update(TipoDedicacion entity) => Service.Update(entity);
         protected override bool Delete(int id) => Service.DeleteById(id);

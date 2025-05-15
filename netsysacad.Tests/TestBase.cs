@@ -39,14 +39,14 @@ public abstract class EntityTestBase<TEntity, TService> : IDisposable
     protected abstract TEntity CreateEntity();
     protected abstract void CheckEntity(TEntity entity);
     protected abstract TEntity Create(TEntity entity);
-    protected abstract TEntity GetById(int id);
+    protected abstract TEntity? GetById(int id);
     protected abstract IList<TEntity> GetAll();
     protected abstract TEntity Update(TEntity entity);
     protected abstract bool Delete(int id);
     protected abstract int GetId(TEntity entity);
     protected abstract void ModifyEntity(TEntity entity);
     protected abstract void CheckUpdatedEntity(TEntity entity);
-    // Reusable CRUD tests
+
     [Fact]
     public void CanCreateEntity()
     {
@@ -60,6 +60,7 @@ public abstract class EntityTestBase<TEntity, TService> : IDisposable
     {
         var entity = Create(CreateEntity());
         var fetched = GetById(GetId(entity));
+        Assert.NotNull(fetched);
         CheckEntity(fetched);
     }
     [Fact]
@@ -78,6 +79,7 @@ public abstract class EntityTestBase<TEntity, TService> : IDisposable
         var updated = Update(entity);
         Assert.Equal(GetId(entity), GetId(updated));
         var fetched = GetById(GetId(entity));
+        Assert.NotNull(fetched);
         CheckUpdatedEntity(fetched);
     }
     [Fact]

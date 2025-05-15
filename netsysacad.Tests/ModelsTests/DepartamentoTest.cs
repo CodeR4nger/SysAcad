@@ -22,7 +22,7 @@ namespace netsysacad.Tests.ModelsTests
         }
 
         protected override Departamento Create(Departamento entity) => Service.Create(entity);
-        protected override Departamento GetById(int id) => Service.SearchById(id);
+        protected override Departamento? GetById(int id) => Service.SearchById(id);
         protected override IList<Departamento> GetAll() => Service.SearchAll();
         protected override Departamento Update(Departamento entity) => Service.Update(entity);
         protected override bool Delete(int id) => Service.DeleteById(id);

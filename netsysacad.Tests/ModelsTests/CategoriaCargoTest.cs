@@ -19,7 +19,7 @@ namespace netsysacad.Tests.ModelsTests
         }
 
         protected override CategoriaCargo Create(CategoriaCargo entity) => Service.Create(entity);
-        protected override CategoriaCargo GetById(int id) => Service.SearchById(id);
+        protected override CategoriaCargo? GetById(int id) => Service.SearchById(id);
         protected override IList<CategoriaCargo> GetAll() => Service.SearchAll();
         protected override CategoriaCargo Update(CategoriaCargo entity) => Service.Update(entity);
         protected override bool Delete(int id) => Service.DeleteById(id);

@@ -21,7 +21,7 @@ namespace netsysacad.Tests.ModelsTests
         }
 
         protected override Area Create(Area entity) => Service.Create(entity);
-        protected override Area GetById(int id) => Service.SearchById(id);
+        protected override Area? GetById(int id) => Service.SearchById(id);
         protected override IList<Area> GetAll() => Service.SearchAll();
         protected override Area Update(Area entity) => Service.Update(entity);
         protected override bool Delete(int id) => Service.DeleteById(id);

@@ -14,6 +14,7 @@ namespace netsysacad.Data
         public DbSet<CategoriaCargo> CategoriasCargo { get; set; }
         public DbSet<TipoDedicacion> TiposDedicacion { get; set; }
         public DbSet<Departamento> Departamentos { get; set; }
+        public DbSet<Grado> Grados { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

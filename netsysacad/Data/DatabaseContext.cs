@@ -17,6 +17,7 @@ namespace netsysacad.Data
         public DbSet<Grado> Grados { get; set; }
         public DbSet<Grupo> Grupos { get; set; }
         public DbSet<Universidad> Universidades { get; set; }
+        public DbSet<TipoEspecialidad> TiposEspecialidad { get; set; }
     }
 
         

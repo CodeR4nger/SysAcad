@@ -58,12 +58,17 @@ namespace netsysacad.Tests.Helpers;
             Universidad = CreateUniversidad(),
             Autoridades = [CreateAutoridad()]
         };
-        public static Materia CreateMateria() => new()
+        public static Materia CreateMateria(bool isReference = false)
         {
-            Nombre = "Desarrollo de software",
-            Codigo = "102",
-            Observacion = "Ninguna observacion"
-        };
+            var materia = new Materia
+            {
+                Nombre = "Desarrollo de software",
+                Codigo = "102",
+                Observacion = "Ninguna observacion",
+                Orientaciones = !isReference ? [CreateOrientacion(true)] : null
+            };
+            return materia;
+        }
         public static Plan CreatePlan() => new()
         {
             Nombre = "Plan 2020",
@@ -71,13 +76,17 @@ namespace netsysacad.Tests.Helpers;
             FechaFin = "2025-12-31",
             Observacion = "Plan de estudios vigente"
         };
-        public static Orientacion CreateOrientacion() => new()
+        public static Orientacion CreateOrientacion(bool isReference = false)
         {
-           Nombre = "Ciencia de Datos",
-           Especialidad = CreateEspecialidad(),
-           Plan = CreatePlan(),
-           Materias = [CreateMateria()]
-        };
+            var orientacion = new Orientacion
+            {
+                Nombre = "Ciencia de Datos",
+                Especialidad = CreateEspecialidad(),
+                Plan = CreatePlan(),
+                Materias = !isReference ? [CreateMateria(true)] : null
+            };
+            return orientacion;
+        }
     }
 
 //using netsysacad.Tests.Helpers; TestDataFactory.

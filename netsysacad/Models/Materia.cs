@@ -10,5 +10,6 @@ namespace netsysacad.Models {
         public required string Codigo { get; set;}
         [Column(TypeName ="varchar(50)")]
         public required string Observacion { get; set;}
+        public List<Orientacion>? Orientaciones { get; set;}
     }
 }

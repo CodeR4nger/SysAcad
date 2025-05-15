@@ -1,8 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace netsysacad.Models {
     public class Orientacion {
+        [Key]
+        public int Id { get; set; }
+        [Column(TypeName ="varchar(50)")]
         public required string Nombre { get; set;}
+        public int EspecialidadId { get; set; }
+        [ForeignKey("EspecialidadId")]
         public required Especialidad Especialidad { get; set;}
+        public int PlanId { get; set; }
+        [ForeignKey("PlanId")]
         public required Plan Plan { get; set;}
-        public required List<Materia> Materias { get; set;}
+        public List<Materia>? Materias { get; set;}
     }
 }

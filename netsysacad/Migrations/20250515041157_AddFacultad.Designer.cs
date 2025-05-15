@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using netsysacad.Data;
@@ -11,9 +12,11 @@ using netsysacad.Data;
 namespace netsysacad.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250515041157_AddFacultad")]
+    partial class AddFacultad
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,7 +284,7 @@ namespace netsysacad.Migrations
 
                     b.HasIndex("UniversidadId");
 
-                    b.ToTable("Facultades");
+                    b.ToTable("Facultad");
                 });
 
             modelBuilder.Entity("netsysacad.Models.Grado", b =>
@@ -486,7 +489,7 @@ namespace netsysacad.Migrations
                         .IsRequired();
 
                     b.HasOne("netsysacad.Models.Facultad", "Facultad")
-                        .WithMany()
+                        .WithMany("Autoridades")
                         .HasForeignKey("FacultadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -554,6 +557,11 @@ namespace netsysacad.Migrations
                     b.Navigation("Especialidad");
 
                     b.Navigation("Plan");
+                });
+
+            modelBuilder.Entity("netsysacad.Models.Facultad", b =>
+                {
+                    b.Navigation("Autoridades");
                 });
 #pragma warning restore 612, 618
         }

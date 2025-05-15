@@ -22,6 +22,7 @@ namespace netsysacad.Data
         public DbSet<Plan> Planes { get; set; }  
         public DbSet<Materia> Materias { get; set; }
         public DbSet<Orientacion> Orientaciones { get; set; }
+        public DbSet<Facultad> Facultades { get; set; }
     }
 
         

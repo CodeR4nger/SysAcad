@@ -14,5 +14,8 @@ namespace netsysacad.Models {
         public required string Telefono { get; set;}
         [Column(TypeName ="varchar(100)")]
         public required string Email { get; set;}
+        public int FacultadId { get; set; }
+        [ForeignKey("FacultadId")]
+        public required Facultad Facultad { get; set; }
     }
 }

@@ -1,42 +1,49 @@
 using netsysacad.Tests.Helpers;
-namespace netsysacad.Tests.ModelsTests;
+using netsysacad.Models;
+using netsysacad.Repositories;
+using netsysacad.Services;
 
-public class FacultadTests
+namespace netsysacad.Tests.ModelsTests
 {
-    [Fact]
-    public void FacultadTest()
+    public class FacultadTests : EntityTestBase<Facultad, FacultadService>
     {
-        var facultad = TestDataFactory.CreateFacultad();
+        public FacultadTests()
+            : base(ctx => new FacultadService(new FacultadRepository(ctx))) { }
 
-        Assert.NotNull(facultad);
-        Assert.Equal("Facultad de Sistemas",facultad.Nombre);
-        Assert.Equal("Sist.",facultad.Abreviatura);
-        Assert.Equal("Computación",facultad.Directorio);
-        Assert.Equal("FS",facultad.Sigla);
-        Assert.Equal("5600",facultad.CodigoPostal);
-        Assert.Equal("San Rafael",facultad.Ciudad);
-        Assert.Equal("Av Rivadavia 1234",facultad.Domicilio);
-        Assert.Equal("123456789",facultad.Telefono);
-        Assert.Equal("Pepito Juan",facultad.Contacto);
-        Assert.Equal("utn@gmail.com",facultad.Email);
+        protected override Facultad CreateEntity() => TestDataFactory.CreateFacultad();
 
-        Assert.NotNull(facultad.Universidad);
-        Assert.Equal("UTN",facultad.Universidad.Nombre);
-        Assert.Equal("FRSR",facultad.Universidad.Sigla);
+        protected override void CheckEntity(Facultad facultad)
+        {
+            Assert.NotNull(facultad);
+            Assert.Equal("Facultad de Sistemas",facultad.Nombre);
+            Assert.Equal("Sist.",facultad.Abreviatura);
+            Assert.Equal("Computación",facultad.Directorio);
+            Assert.Equal("FS",facultad.Sigla);
+            Assert.Equal("5600",facultad.CodigoPostal);
+            Assert.Equal("San Rafael",facultad.Ciudad);
+            Assert.Equal("Av Rivadavia 1234",facultad.Domicilio);
+            Assert.Equal("123456789",facultad.Telefono);
+            Assert.Equal("Pepito Juan",facultad.Contacto);
+            Assert.Equal("utn@gmail.com",facultad.Email);
 
-        Assert.NotNull(facultad.Autoridades);
-        Assert.Single(facultad.Autoridades);
-        Assert.NotNull(facultad.Autoridades[0]);
-        Assert.Equal("PruebaAutoridad",facultad.Autoridades[0].Nombre);
-        Assert.NotNull(facultad.Autoridades[0].Cargo);
-        Assert.Equal("Profesor Titular", facultad.Autoridades[0].Cargo.Nombre);
-        Assert.Equal(100, facultad.Autoridades[0].Cargo.Puntos);
-        Assert.NotNull(facultad.Autoridades[0].Cargo.CategoriaCargo);
-        Assert.Equal("Administrativo", facultad.Autoridades[0].Cargo.CategoriaCargo.Nombre);
-        Assert.NotNull(facultad.Autoridades[0].Cargo.TipoDedicacion);
-        Assert.Equal("Exclusiva", facultad.Autoridades[0].Cargo.TipoDedicacion.Nombre);
-        Assert.Equal("Dedicación exclusiva a la docencia e investigación", facultad.Autoridades[0].Cargo.TipoDedicacion.Observacion);
-        Assert.Equal("1234553",facultad.Autoridades[0].Telefono);
-        Assert.Equal("hguthg@gmail.com",facultad.Autoridades[0].Email);
+            Assert.NotNull(facultad.Universidad);
+            Assert.Equal("UTN",facultad.Universidad.Nombre);
+            Assert.Equal("FRSR",facultad.Universidad.Sigla);
+        }
+
+        protected override Facultad Create(Facultad entity) => Service.Create(entity);
+        protected override Facultad? GetById(int id) => Service.SearchById(id);
+        protected override IList<Facultad> GetAll() => Service.SearchAll();
+        protected override Facultad Update(Facultad entity) => Service.Update(entity);
+        protected override bool Delete(int id) => Service.DeleteById(id);
+        protected override int GetId(Facultad entity) => entity.Id;
+        protected override void ModifyEntity(Facultad entity)
+        {
+            entity.Nombre = "Facultad F - 2023";
+        }
+        protected override void CheckUpdatedEntity(Facultad entity)
+        {
+            Assert.Equal("Facultad F - 2023", entity.Nombre);
+        }
     }
 }

@@ -28,6 +28,17 @@ namespace netsysacad.Tests.ModelsTests
             Assert.Equal("Dedicación exclusiva a la docencia e investigación", autoridad.Cargo.TipoDedicacion.Observacion);
             Assert.Equal("1234553",autoridad.Telefono);
             Assert.Equal("hguthg@gmail.com",autoridad.Email);
+            Assert.NotNull(autoridad.Facultad);
+            Assert.Equal("Facultad de Sistemas",autoridad.Facultad.Nombre);
+            Assert.Equal("Sist.",autoridad.Facultad.Abreviatura);
+            Assert.Equal("Computación",autoridad.Facultad.Directorio);
+            Assert.Equal("FS",autoridad.Facultad.Sigla);
+            Assert.Equal("5600",autoridad.Facultad.CodigoPostal);
+            Assert.Equal("San Rafael",autoridad.Facultad.Ciudad);
+            Assert.Equal("Av Rivadavia 1234",autoridad.Facultad.Domicilio);
+            Assert.Equal("123456789",autoridad.Facultad.Telefono);
+            Assert.Equal("Pepito Juan",autoridad.Facultad.Contacto);
+            Assert.Equal("utn@gmail.com",autoridad.Facultad.Email);
         }
 
         protected override Autoridad Create(Autoridad entity) => Service.Create(entity);

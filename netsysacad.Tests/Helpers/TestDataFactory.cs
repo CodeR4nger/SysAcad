@@ -36,7 +36,8 @@ namespace netsysacad.Tests.Helpers;
             Nombre = "PruebaAutoridad", 
             Cargo = CreateCargo(),
             Telefono = "1234553",
-            Email = "hguthg@gmail.com"
+            Email = "hguthg@gmail.com",
+            Facultad = CreateFacultad()
         };
         public static Universidad CreateUniversidad() => new()
         {
@@ -56,7 +57,6 @@ namespace netsysacad.Tests.Helpers;
             Contacto = "Pepito Juan",
             Email = "utn@gmail.com",
             Universidad = CreateUniversidad(),
-            Autoridades = [CreateAutoridad()]
         };
         public static Materia CreateMateria(bool isReference = false)
         {

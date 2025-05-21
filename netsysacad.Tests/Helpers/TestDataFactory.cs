@@ -88,5 +88,3 @@ namespace netsysacad.Tests.Helpers;
             return orientacion;
         }
     }
-
-//using netsysacad.Tests.Helpers; TestDataFactory.

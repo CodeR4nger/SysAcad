@@ -41,7 +41,7 @@ package "Sistema Académico"{
 
     class Autoridad {
         -nombre: str
-        -cargo: str
+        -cargo: Cargo
         -telefono: str
         -email: str
     }
@@ -114,5 +114,6 @@ package "Sistema Académico"{
     Facultad -- Universidad
     Cargo -- CategoriaCargo
     Cargo -- TipoDedicacion
+    Cargo -- Autoridad
 }
 @enduml

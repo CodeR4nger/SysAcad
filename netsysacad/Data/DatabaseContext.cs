@@ -1,47 +1,76 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using DotNetEnv;
+using netsysacad.Utils;
 using netsysacad.Models;
 
-namespace netsysacad.Data
+namespace netsysacad.Data;
+
+public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
 {
-    public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
-    {
-        public DbSet<Alumno> Alumnos { get; set; }
-        public DbSet<Area> Areas { get; set; }
-        public DbSet<Autoridad> Autoridades { get; set; }
-        public DbSet<Cargo> Cargos { get; set; }
-        public DbSet<CategoriaCargo> CategoriasCargo { get; set; }
-        public DbSet<TipoDedicacion> TiposDedicacion { get; set; }
-        public DbSet<Departamento> Departamentos { get; set; }
-        public DbSet<Grado> Grados { get; set; }
-        public DbSet<Grupo> Grupos { get; set; }
-        public DbSet<Universidad> Universidades { get; set; }
-        public DbSet<TipoEspecialidad> TiposEspecialidad { get; set; }
-        public DbSet<Especialidad> Especialidades { get; set; }
-        public DbSet<Plan> Planes { get; set; }  
-        public DbSet<Materia> Materias { get; set; }
-        public DbSet<Orientacion> Orientaciones { get; set; }
-        public DbSet<Facultad> Facultades { get; set; }
-    }
+    public DbSet<Alumno> Alumnos { get; set; }
+    public DbSet<Area> Areas { get; set; }
+    public DbSet<Autoridad> Autoridades { get; set; }
+    public DbSet<Cargo> Cargos { get; set; }
+    public DbSet<CategoriaCargo> CategoriasCargo { get; set; }
+    public DbSet<TipoDedicacion> TiposDedicacion { get; set; }
+    public DbSet<Departamento> Departamentos { get; set; }
+    public DbSet<Grado> Grados { get; set; }
+    public DbSet<Grupo> Grupos { get; set; }
+    public DbSet<Universidad> Universidades { get; set; }
+    public DbSet<TipoEspecialidad> TiposEspecialidad { get; set; }
+    public DbSet<Especialidad> Especialidades { get; set; }
+    public DbSet<Plan> Planes { get; set; }  
+    public DbSet<Materia> Materias { get; set; }
+    public DbSet<Orientacion> Orientaciones { get; set; }
+    public DbSet<Facultad> Facultades { get; set; }
+}
 
         
-    public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContext>
+/// <summary>
+/// Define un contrato para crear instancias de <see cref="DatabaseContext"/>.
+/// </summary>
+public interface IDatabaseContextFactory
+{
+    /// <summary>
+    /// Crea una nueva instancia de <see cref="DatabaseContext"/>.
+    /// </summary>
+    /// <param name="args">Argumentos opcionales de configuración.</param>
+    /// <returns>Una instancia de <see cref="DatabaseContext"/>.</returns>
+    DatabaseContext CreateDbContext(string[] args);
+}
+
+public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContext>,IDatabaseContextFactory
+{
+    private readonly IEnvironmentHandler _envHandler;
+
+    public DatabaseContextFactory() : this(new EnvironmentHandler())
     {
-        public DatabaseContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+    }
+    /// <summary>
+    /// Constructor que permite inyectar una implementación personalizada de <see cref="IEnvironmentHandler"/>.
+    /// </summary>
+    public DatabaseContextFactory(IEnvironmentHandler envHandler)
+    {
+        _envHandler = envHandler;
+        _envHandler.Load();
+    }
+    /// <summary>
+    /// Crea una nueva instancia de <see cref="DatabaseContext"/> usando los parámetros de conexión definidos en variables de entorno.
+    /// </summary>
+    /// <returns>Una nueva instancia de <see cref="DatabaseContext"/>.</returns>
+    public DatabaseContext CreateDbContext(string[] args)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
 
-            Env.Load();
+        string connectionString = $"Host={_envHandler.Get("POSTGRES_HOST")};" +
+                                  $"Username={_envHandler.Get("POSTGRES_USER")};" +
+                                  $"Password={_envHandler.Get("POSTGRES_PASSWORD")};" +
+                                  $"Database={_envHandler.Get("POSTGRES_DB")};";
 
-            string connectionString = $"Host={Env.GetString("POSTGRES_HOST")};" +
-                                    $"Username={Env.GetString("POSTGRES_USER")};" +
-                                    $"Password={Env.GetString("POSTGRES_PASSWORD")};" +
-                                    $"Database={Env.GetString("POSTGRES_DB")};";
+        optionsBuilder.UseNpgsql(connectionString);
 
-            optionsBuilder.UseNpgsql(connectionString);
-
-            return new DatabaseContext(optionsBuilder.Options);
-        }
+        return new DatabaseContext(optionsBuilder.Options);
     }
 }
+
+

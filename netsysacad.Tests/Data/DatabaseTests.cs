@@ -1,6 +1,4 @@
-using Microsoft.EntityFrameworkCore;
 using netsysacad.Data;
-using DotNetEnv;
 
 namespace netsysacad.Tests.Data;
 

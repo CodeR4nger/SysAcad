@@ -1,4 +1,4 @@
-using netsysacad.Tests.Helpers;
+using netsysacad.Tests.Utils;
 using netsysacad.Repositories;
 using netsysacad.Services;
 using netsysacad.Models;

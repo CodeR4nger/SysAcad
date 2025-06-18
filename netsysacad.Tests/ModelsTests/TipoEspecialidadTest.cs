@@ -1,7 +1,7 @@
 using netsysacad.Models;
 using netsysacad.Repositories;
 using netsysacad.Services;
-using netsysacad.Tests.Helpers;
+using netsysacad.Tests.Utils;
 
 namespace netsysacad.Tests.ModelsTests
 {

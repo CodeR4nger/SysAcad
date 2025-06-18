@@ -1,5 +1,5 @@
 using netsysacad.Models;
-namespace netsysacad.Tests.Helpers;
+namespace netsysacad.Tests.Utils;
 
     public static class TestDataFactory
     {

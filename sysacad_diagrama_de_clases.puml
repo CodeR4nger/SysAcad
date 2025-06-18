@@ -46,10 +46,6 @@ package "Sistema Académico"{
         -email: str
     }
 
-    class Area {
-        - nombre: str
-    }
-
     class Especialidad {
         - nombre: str
         - letra: str
@@ -62,6 +58,10 @@ package "Sistema Académico"{
     }
 
     class Grupo {
+        - nombre: str
+    }
+    
+    class Area {
         - nombre: str
     }
 
@@ -108,12 +108,14 @@ package "Sistema Académico"{
 
     Orientacion -- Especialidad
     Orientacion -- Plan
-    Orientacion -- Materia
-    Especialidad -- TipoEspecialidad
-    Facultad <-- Autoridad
-    Facultad -- Universidad
-    Cargo -- CategoriaCargo
-    Cargo -- TipoDedicacion
-    Cargo -- Autoridad
+    Orientacion <-- Materia
+    Especialidad <-- TipoEspecialidad
+    Facultad <--> Autoridad 
+    Facultad <-- Universidad
+    Cargo <-- CategoriaCargo
+    Cargo <-- TipoDedicacion
+    Cargo <--> Autoridad
+    Area --> Materia
+    Grupo --> Materia
 }
 @enduml

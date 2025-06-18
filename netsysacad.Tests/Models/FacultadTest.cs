@@ -3,7 +3,7 @@ using netsysacad.Models;
 using netsysacad.Repositories;
 using netsysacad.Services;
 
-namespace netsysacad.Tests.ModelsTests
+namespace netsysacad.Tests.Models
 {
     public class FacultadTests : EntityTestBase<Facultad, FacultadService>
     {

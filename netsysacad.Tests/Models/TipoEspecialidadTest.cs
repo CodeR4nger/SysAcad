@@ -3,7 +3,7 @@ using netsysacad.Repositories;
 using netsysacad.Services;
 using netsysacad.Tests.Utils;
 
-namespace netsysacad.Tests.ModelsTests
+namespace netsysacad.Tests.Models
 {
     public class TipoEspecialidadTests : EntityTestBase<TipoEspecialidad, TipoEspecialidadService>
     {

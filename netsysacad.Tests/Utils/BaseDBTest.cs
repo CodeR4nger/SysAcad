@@ -15,7 +15,7 @@ public interface IDatabaseTestScope : IDisposable
 public class BaseTestDB : IDatabaseTestScope
 {
     public DatabaseContext Context { get; }
-    private readonly IDbContextTransaction _transaction;
+    public readonly IDbContextTransaction _transaction;
 
     public BaseTestDB(IDatabaseContextFactory? factory = null)
     {

@@ -108,7 +108,7 @@ package "Sistema Académico"{
 
     Orientacion -- Especialidad
     Orientacion -- Plan
-    Orientacion <-- Materia
+    Orientacion --> Materia
     Especialidad <-- TipoEspecialidad
     Facultad <--> Autoridad 
     Facultad <-- Universidad

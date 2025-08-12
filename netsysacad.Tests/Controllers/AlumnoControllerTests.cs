@@ -9,6 +9,9 @@ using netsysacad.Tests.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using netsysacad.Data;
 using Microsoft.EntityFrameworkCore.Storage;
+using Sqids;
+using netsysacad.Utils;
+using netsysacad.Mapping;
 
 namespace netsysacad.Tests.Controllers;
 
@@ -18,6 +21,7 @@ public class AlumnoControllerTests
     private readonly HttpClient _client;
     private readonly AlumnoService _service;
     private readonly DatabaseContext _context;
+    private readonly AlumnoMapper _mapper;
     public readonly IDbContextTransaction _transaction;
     private readonly string uri = "/api/alumno";
 
@@ -35,6 +39,14 @@ public class AlumnoControllerTests
         _context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         _transaction = _context.Database.BeginTransaction();
         _service = new AlumnoService(new AlumnoRepository(_context));
+        var envHandler = new EnvironmentHandler();
+        var encoder = new SqidsEncoder<int>(new SqidsOptions
+        {
+            Alphabet = envHandler.Get("SQID_ALPHABET"),
+            MinLength = int.Parse(envHandler.Get("SQID_MIN_LENGTH"))
+        });
+        _mapper = new AlumnoMapper(encoder);
+
     }
     private static void CheckEntity(Alumno alumno)
     {
@@ -53,7 +65,8 @@ public class AlumnoControllerTests
     {
         
         Alumno alumno = TestDataFactory.CreateAlumno();
-        string json = JsonSerializer.Serialize(alumno);
+
+        string json = JsonSerializer.Serialize(_mapper.ToDto(alumno));
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await _client.PostAsync(uri, content);
@@ -71,25 +84,27 @@ public class AlumnoControllerTests
         var response = await _client.GetAsync(uri);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var jsonString = await response.Content.ReadAsStringAsync();
-        var alumnosFromApi = JsonSerializer.Deserialize<List<Alumno>>(jsonString, JsonOptions);
+        var alumnosFromApi = JsonSerializer.Deserialize<List<AlumnoDTO>>(jsonString, JsonOptions);
         Assert.NotNull(alumnosFromApi);
         var alumnoApi = alumnosFromApi?.FirstOrDefault();
         Assert.NotNull(alumnoApi);
-        CheckEntity(alumnoApi);
-        Assert.Equal(alumnoDb.Id, alumnoApi.Id);
+        CheckEntity(_mapper.FromDto(alumnoApi));
+        Assert.Equal(alumnoDb.Id, _mapper.DecodeId(alumnoApi.Id));
     }
     [Fact]
     public async Task CanGetEntity()
     {
         var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
-        var query = String.Concat(uri, "/", alumnoDb.Id);
+        var encodedAlumno = _mapper.ToDto(alumnoDb);
+        var query = String.Concat(uri, "/", encodedAlumno.Id);
         var response = await _client.GetAsync(query);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var jsonString = await response.Content.ReadAsStringAsync();
-        var alumnoApi = JsonSerializer.Deserialize<Alumno>(jsonString, JsonOptions);
+        var alumnoApi = JsonSerializer.Deserialize<AlumnoDTO>(jsonString, JsonOptions);
         Assert.NotNull(alumnoApi);
-        CheckEntity(alumnoApi);
-        Assert.Equal(alumnoDb.Id, alumnoApi.Id);
+        var decodedAlumno = _mapper.FromDto(alumnoApi);
+        CheckEntity(decodedAlumno);
+        Assert.Equal(alumnoDb.Id, decodedAlumno.Id);
     }
     [Fact]
     public async Task CanUpdateEntity()
@@ -98,9 +113,9 @@ public class AlumnoControllerTests
         var alumno = TestDataFactory.CreateAlumno();
         alumno.Id = alumnoDb.Id;
         alumno.Nombre = "Jose";
-
-        var serializedAlumno = JsonSerializer.Serialize(alumno);
-        var query = String.Concat(uri, "/", alumno.Id);
+        var encodedAlumno = _mapper.ToDto(alumno);
+        var query = String.Concat(uri, "/", encodedAlumno.Id);
+        var serializedAlumno = JsonSerializer.Serialize(encodedAlumno);
         var content = new StringContent(serializedAlumno, Encoding.UTF8, "application/json");
         var response = await _client.PutAsync(query,content);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -113,7 +128,8 @@ public class AlumnoControllerTests
     public async Task CanDeleteEntity()
     {
         var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
-        var query = String.Concat(uri, "/", alumnoDb.Id);
+        var encodedAlumno = _mapper.ToDto(alumnoDb);
+        var query = String.Concat(uri, "/", encodedAlumno.Id);
         var response = await _client.DeleteAsync(query);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var found = _service.SearchById(alumnoDb.Id);

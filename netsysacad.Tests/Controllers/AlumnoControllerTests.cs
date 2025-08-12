@@ -109,6 +109,16 @@ public class AlumnoControllerTests
         Assert.Equal(alumno.Nombre,updatedAlumno.Nombre);
         Assert.Equal(alumno.Id, updatedAlumno.Id);
     }
+    [Fact]
+    public async Task CanDeleteEntity()
+    {
+        var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
+        var query = String.Concat(uri, "/", alumnoDb.Id);
+        var response = await _client.DeleteAsync(query);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var found = _service.SearchById(alumnoDb.Id);
+        Assert.Null(found);
+    }
     public void Dispose()
     {
         _transaction.Rollback();

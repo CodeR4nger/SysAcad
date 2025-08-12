@@ -31,9 +31,15 @@ public class AlumnoController(DatabaseContext dbContext) : ControllerBase
         return Ok(alumno);
     }
     [HttpPut("{id}")]
-    public IActionResult Put(int id,[FromBody] Alumno updatedAlumno)
+    public IActionResult Put(int id, [FromBody] Alumno updatedAlumno)
     {
         var updated = _alumnoService.Update(updatedAlumno);
         return Ok();
+    }
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var success = _alumnoService.DeleteById(id);
+        return Ok(success);
     }
 }

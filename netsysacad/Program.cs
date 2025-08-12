@@ -10,7 +10,9 @@ namespace netsysacad
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
-            builder.Services.AddSingleton<DatabaseContext>(new DatabaseContextFactory().CreateDbContext([]));
+            var database = new DatabaseContextFactory().CreateDbContext([]);
+            builder.Services.AddSingleton<DatabaseContext>(database);
+            database.Database.EnsureCreated();
             var app = builder.Build();
 
             app.MapControllers();

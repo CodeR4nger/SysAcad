@@ -20,6 +20,7 @@ public class AlumnoController(DatabaseContext dbContext,SqidsEncoder<int> sqids)
     public IActionResult Create([FromBody] AlumnoDTO alumno)
     {
         var decodedAlumno = _mapper.FromDto(alumno);
+        HtmlSanetizer.SanetizeObject(decodedAlumno);
         var dbAlumno = _service.Create(decodedAlumno);
         return Created("Alumno creado exitosamente", _mapper.ToDto(dbAlumno));
     }
@@ -42,6 +43,7 @@ public class AlumnoController(DatabaseContext dbContext,SqidsEncoder<int> sqids)
     public IActionResult Put(string id, [FromBody] AlumnoDTO updatedAlumno)
     {
         var decodedAlumno = _mapper.FromDto(updatedAlumno);
+        HtmlSanetizer.SanetizeObject(decodedAlumno);
         var updated = _service.Update(decodedAlumno);
         return Ok();
     }

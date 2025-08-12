@@ -33,7 +33,22 @@ public abstract class BaseRepository<T> where T : class
 
     public virtual T Update(T entity)
     {
-        _dbSet.Update(entity);
+        var entityId = _context.Entry(entity).Property("Id").CurrentValue;
+
+        var trackedEntity = _context.ChangeTracker.Entries<T>()
+            .FirstOrDefault(e =>
+                e.Entity != null &&
+                _context.Entry(e.Entity).Property("Id").CurrentValue is object trackedId &&
+                trackedId.Equals(entityId)
+            );
+
+        if (trackedEntity != null)
+        {
+            trackedEntity.State = EntityState.Detached;
+        }
+
+        _dbSet.Attach(entity);
+        _context.Entry(entity).State = EntityState.Modified;
         _context.SaveChanges();
         return entity;
     }

@@ -91,6 +91,24 @@ public class AlumnoControllerTests
         CheckEntity(alumnoApi);
         Assert.Equal(alumnoDb.Id, alumnoApi.Id);
     }
+    [Fact]
+    public async Task CanUpdateEntity()
+    {
+        var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
+        var alumno = TestDataFactory.CreateAlumno();
+        alumno.Id = alumnoDb.Id;
+        alumno.Nombre = "Jose";
+
+        var serializedAlumno = JsonSerializer.Serialize(alumno);
+        var query = String.Concat(uri, "/", alumno.Id);
+        var content = new StringContent(serializedAlumno, Encoding.UTF8, "application/json");
+        var response = await _client.PutAsync(query,content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var updatedAlumno = _service.SearchById(alumno.Id);
+        Assert.NotNull(updatedAlumno);
+        Assert.Equal(alumno.Nombre,updatedAlumno.Nombre);
+        Assert.Equal(alumno.Id, updatedAlumno.Id);
+    }
     public void Dispose()
     {
         _transaction.Rollback();

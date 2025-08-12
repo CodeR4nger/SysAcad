@@ -30,4 +30,10 @@ public class AlumnoController(DatabaseContext dbContext) : ControllerBase
         var alumno = _alumnoService.SearchById(id);
         return Ok(alumno);
     }
+    [HttpPut("{id}")]
+    public IActionResult Put(int id,[FromBody] Alumno updatedAlumno)
+    {
+        var updated = _alumnoService.Update(updatedAlumno);
+        return Ok();
+    }
 }

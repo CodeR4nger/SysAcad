@@ -8,21 +8,20 @@ namespace netsysacad.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AlumnoController : ControllerBase
+public class AlumnoController(DatabaseContext dbContext) : ControllerBase
 {
+    private readonly AlumnoService _alumnoService = new(new Repositories.AlumnoRepository(dbContext));
 
     [HttpPost]
     public IActionResult Create([FromBody] Alumno alumno)
     {
-        var service = new AlumnoService(new Repositories.AlumnoRepository(new DatabaseContextFactory().CreateDbContext([])));
-        var dbAlumno = service.Create(alumno);
+        var dbAlumno = _alumnoService.Create(alumno);
         return Created("Alumno creado exitosamente", dbAlumno);
     }
     [HttpGet]
     public IActionResult GetAll()
     {
-        var service = new AlumnoService(new Repositories.AlumnoRepository(new DatabaseContextFactory().CreateDbContext([])));
-        var alumnos = service.SearchAll();
+        var alumnos = _alumnoService.SearchAll();
         return Ok(alumnos);
     }
 }

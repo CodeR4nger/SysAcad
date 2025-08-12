@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using netsysacad.Repositories;
 using netsysacad.Services;
 using netsysacad.Tests.Utils;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using netsysacad.Data;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace netsysacad.Tests.Controllers;
 
 public class AlumnoControllerTests
-    : BaseTestDB, IClassFixture<WebApplicationFactory<Program>>
+    : IClassFixture<WebApplicationFactory<Program>>,IDisposable
 {
     private readonly HttpClient _client;
     private readonly AlumnoService _service;
-    private bool shouldRollback = true;
+    private readonly DatabaseContext _context;
+    public readonly IDbContextTransaction _transaction;
     private readonly string uri = "/api/alumno";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -27,7 +30,11 @@ public class AlumnoControllerTests
     public AlumnoControllerTests(WebApplicationFactory<Program> factory) : base()
     {
         _client = factory.CreateClient();
-        _service = new AlumnoService(new AlumnoRepository(Context));
+
+        var scope = factory.Services.CreateScope();
+        _context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        _transaction = _context.Database.BeginTransaction();
+        _service = new AlumnoService(new AlumnoRepository(_context));
     }
     private static void CheckEntity(Alumno alumno)
     {
@@ -54,7 +61,6 @@ public class AlumnoControllerTests
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
         var alumnosDb = _service.SearchAll();
-        shouldRollback = !_service.DeleteById(alumnosDb[0].Id);
         Assert.Single(alumnosDb);
         CheckEntity(alumnosDb[0]);
     }
@@ -72,17 +78,10 @@ public class AlumnoControllerTests
         CheckEntity(alumnoApi);
         Assert.Equal(alumnoDb.Id, alumnoApi.Id);
     }
-    public override void Dispose()
+
+    public void Dispose()
     {
-        if (shouldRollback)
-        {
-            _transaction.Rollback();
-        }
-        else
-        {
-            _transaction.Commit();
-        }
+        _transaction.Rollback();
         _transaction.Dispose();
-        Context.Dispose();
     }
 }

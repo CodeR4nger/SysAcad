@@ -24,4 +24,10 @@ public class AlumnoController(DatabaseContext dbContext) : ControllerBase
         var alumnos = _alumnoService.SearchAll();
         return Ok(alumnos);
     }
+    [HttpGet("{id}")]
+    public IActionResult Get(int id)
+    {
+        var alumno = _alumnoService.SearchById(id);
+        return Ok(alumno);
+    }
 }

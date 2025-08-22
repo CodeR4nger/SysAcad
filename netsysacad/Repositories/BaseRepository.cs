@@ -31,6 +31,11 @@ public abstract class BaseRepository<T> where T : class
         return _dbSet.ToList();
     }
 
+    public virtual List<T> SearchPage(int page, int elementsPerPage)
+    {
+        return _dbSet.Skip((page - 1)*elementsPerPage).Take(elementsPerPage).ToList();
+    }
+    
     public virtual T Update(T entity)
     {
         var entityId = _context.Entry(entity).Property("Id").CurrentValue;

@@ -81,7 +81,10 @@ public class AlumnoControllerTests
     public async Task CanGetAllEntity()
     {
         var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
-        var response = await _client.GetAsync(uri);
+        var request = new HttpRequestMessage(HttpMethod.Get, uri);
+        request.Headers.Add("X-Page", "1");
+        request.Headers.Add("X-Per-Page", "30");
+        var response = await _client.SendAsync(request);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var jsonString = await response.Content.ReadAsStringAsync();
         var alumnosFromApi = JsonSerializer.Deserialize<List<AlumnoDTO>>(jsonString, JsonOptions);

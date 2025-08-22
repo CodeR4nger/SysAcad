@@ -27,7 +27,23 @@ public class AlumnoController(DatabaseContext dbContext,SqidsEncoder<int> sqids)
     [HttpGet]
     public IActionResult GetAll()
     {
-        List<AlumnoDTO> encodedAlumnos = [.. _service.SearchAll().Select(_mapper.ToDto)];
+        var page = Request.Headers.TryGetValue("X-Page", out var pageStr) && int.TryParse(pageStr, out var parsedPage)
+            ? parsedPage
+            : -1;
+        var perPage = Request.Headers.TryGetValue("X-Per-Page", out var perPageStr) && int.TryParse(perPageStr, out var parsedPerPage)
+            ? parsedPerPage
+            : -1;
+
+        List<Alumno> alumnos;
+        if (page > 0 && perPage > 0)
+        {
+            alumnos = _service.SearchPage(page,perPage);
+        }
+        else
+        {
+            alumnos = _service.SearchAll();
+        }
+        List<AlumnoDTO> encodedAlumnos = [.. alumnos.Select(_mapper.ToDto)];
         return Ok(encodedAlumnos);
     }
     [HttpGet("{id}")]

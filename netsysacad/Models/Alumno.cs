@@ -11,7 +11,7 @@ namespace netsysacad.Models {
         public required string Nombre { get; set;}
         [Column(TypeName ="varchar(15)")]
         public required string NroDocumento { get; set;}
-        [Column(TypeName = "varchar(50)")]
+        [Column(TypeName = "int")]
         public required TipoDocumento TipoDocumento { get; set;}
         [Column(TypeName = "varchar(50)")]
         public required string FechaNacimiento { get; set;}

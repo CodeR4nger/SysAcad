@@ -12,6 +12,7 @@ public class BaseService<T> where T : class
     public virtual T Create(T entity) => _repository.Create(entity);
     public virtual T? SearchById(int id) => _repository.SearchById(id);
     public virtual List<T> SearchAll() => _repository.SearchAll();
+    public virtual List<T> SearchPage(int page,int elementsPerPage) => _repository.SearchPage(page,elementsPerPage);
     public virtual T Update(T entity) => _repository.Update(entity);
     public virtual bool DeleteById(int id) => _repository.DeleteById(id);
 }

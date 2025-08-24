@@ -1,5 +1,7 @@
 using netsysacad.Data;
 using Microsoft.EntityFrameworkCore;
+using netsysacad.Mapping;
+using Microsoft.AspNetCore.Mvc;
 
 namespace netsysacad.Repositories;
 
@@ -31,10 +33,61 @@ public abstract class BaseRepository<T> where T : class
         return _dbSet.ToList();
     }
 
-    public virtual List<T> SearchPage(int page, int elementsPerPage)
+    public IEnumerable<T> ApplyFilters(IQueryable<T> source, IEnumerable<ApiFilter> filters)
     {
-        return _dbSet.Skip((page - 1)*elementsPerPage).Take(elementsPerPage).ToList();
+        var properties = typeof(T).GetProperties().ToDictionary(p => p.Name, p => p);
+
+        return source.AsEnumerable().Where(item =>
+        {
+            foreach (var filter in filters)
+            {
+                if (!properties.TryGetValue(filter.Field, out var property))
+                    return false;
+
+                var propValue = property.GetValue(item)?.ToString();
+                if (propValue == null)
+                    return false;
+
+                var passesFilter = filter.Operation switch
+                {
+                    "==" => propValue.Equals(filter.Value, StringComparison.OrdinalIgnoreCase),
+                    "!=" => !propValue.Equals(filter.Value, StringComparison.OrdinalIgnoreCase),
+                    "contains" => propValue.Contains(filter.Value, StringComparison.OrdinalIgnoreCase),
+                    _ => false
+                };
+
+                if (!passesFilter)
+                    return false;
+            }
+
+            return true;
+        });
     }
+
+
+
+    public virtual List<T> SearchPage(int? page, int? elementsPerPage, List<ApiFilter>? filters)
+    {
+        int pageNumber = page.GetValueOrDefault(1);
+        int pageSize = elementsPerPage.GetValueOrDefault(10);
+
+        var query = _dbSet.AsQueryable();
+
+        if (filters != null && filters.Count != 0)
+        {
+            var filtered = ApplyFilters(query, filters);
+            return filtered
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+
+        return query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
     
     public virtual T Update(T entity)
     {

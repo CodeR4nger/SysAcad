@@ -81,6 +81,20 @@ public class AlumnoControllerTests
     public async Task CanGetAllEntity()
     {
         var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
+        var response = await _client.GetAsync(uri);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var alumnosFromApi = JsonSerializer.Deserialize<List<AlumnoDTO>>(jsonString, JsonOptions);
+        Assert.NotNull(alumnosFromApi);
+        var alumnoApi = alumnosFromApi?.FirstOrDefault();
+        Assert.NotNull(alumnoApi);
+        CheckEntity(_mapper.FromDto(alumnoApi));
+        Assert.Equal(alumnoDb.Id, _mapper.DecodeId(alumnoApi.Id));
+    }
+    [Fact]
+    public async Task CanGetAllPaginatedEntity()
+    {
+        var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
         request.Headers.Add("X-Page", "1");
         request.Headers.Add("X-Per-Page", "30");
@@ -93,6 +107,28 @@ public class AlumnoControllerTests
         Assert.NotNull(alumnoApi);
         CheckEntity(_mapper.FromDto(alumnoApi));
         Assert.Equal(alumnoDb.Id, _mapper.DecodeId(alumnoApi.Id));
+    }
+    [Fact]
+    public async Task CanGetFilteredEntity()
+    {
+        var alumnoToFind = TestDataFactory.CreateAlumno();
+        var extraAlumno = TestDataFactory.CreateAlumno();
+        extraAlumno.Apellido = "Test";
+        var alumnoDb = _service.Create(alumnoToFind);
+       _service.Create(extraAlumno);
+        var request = new HttpRequestMessage(HttpMethod.Get, uri);
+        request.Headers.Add("X-Filter", $@"[{{""field"":""Apellido"", ""op"":""=="", ""value"":""{alumnoDb.Apellido}""}}]");
+        var response = await _client.SendAsync(request);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var alumnosFromApi = JsonSerializer.Deserialize<List<AlumnoDTO>>(jsonString, JsonOptions);
+        Assert.NotNull(alumnosFromApi);
+        Assert.Single(alumnosFromApi);
+        var alumnoApi = alumnosFromApi?.FirstOrDefault();
+        Assert.NotNull(alumnoApi);
+        CheckEntity(_mapper.FromDto(alumnoApi));
+        Assert.DoesNotMatch(extraAlumno.Apellido, alumnoApi.Apellido);
+        Assert.Equal(alumnoDb.Apellido, alumnoApi.Apellido);
     }
     [Fact]
     public async Task CanGetEntity()

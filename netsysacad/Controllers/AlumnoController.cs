@@ -27,17 +27,20 @@ public class AlumnoController(DatabaseContext dbContext,SqidsEncoder<int> sqids)
     [HttpGet]
     public IActionResult GetAll()
     {
-        var page = Request.Headers.TryGetValue("X-Page", out var pageStr) && int.TryParse(pageStr, out var parsedPage)
+        int? page = Request.Headers.TryGetValue("X-Page", out var pageStr) && int.TryParse(pageStr, out var parsedPage) && parsedPage > 0
             ? parsedPage
-            : -1;
-        var perPage = Request.Headers.TryGetValue("X-Per-Page", out var perPageStr) && int.TryParse(perPageStr, out var parsedPerPage)
+            : null;
+        int? perPage = Request.Headers.TryGetValue("X-Per-Page", out var perPageStr) && int.TryParse(perPageStr, out var parsedPerPage) && parsedPerPage > 0
             ? parsedPerPage
-            : -1;
-
+            : null;
+        string? serializedFilters = Request.Headers.TryGetValue("X-Filter", out var filterStr)
+            ? filterStr.ToString() 
+            : null;
+        List<ApiFilter>? filters = ApiFilterMapper.DecodeFilter(serializedFilters);
         List<Alumno> alumnos;
-        if (page > 0 && perPage > 0)
+        if ((page.HasValue && perPage.HasValue) || (filters != null && filters.Count != 0))
         {
-            alumnos = _service.SearchPage(page,perPage);
+            alumnos = _service.SearchPage(page,perPage,filters);
         }
         else
         {

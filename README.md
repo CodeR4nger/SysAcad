@@ -1,34 +1,53 @@
-# SysAcad
+# Proyecto SYSACAD
 
-## Funcionalidades principales
+## Descripción
 
-- **Gestión de usuarios**: Administración de alumnos, profesores y usuarios con rol de administrador.
-- **Acceso rápido a información de materias**: Consulta ágil de horarios, contenidos y responsables de cátedras.
-- **Generación de certificados en PDF**: Emisión de certificados personalizados para alumnos y docentes.
-- **Sistema de calificaciones avanzado**: Registro de notas con lógica condicional (aprobación automática, recuperación, etc.).
-- **Gestión de asignación docente**: Asociación dinámica de profesores a las materias correspondientes.
+Este proyecto en C# consiste en desarrollar una versión actualizada del sistema **SYSACAD**. Este manejara solicitudes de API para una interfaz web para el sistema academico.
 
-## Arquitectura
+## Funcionalidades
 
-- **Backend**: C# con .NET Core 
-- **Base de datos**: PostgreSQL.
+- Manejo de base de datos.
+- Procesamiento y validación de registros únicos por identificador.
+- Persistencia de cada registro en su tabla correspondiente dentro de la base de datos.
+- Generacion de certificados PDF para los alumnos
+- Manejo de API para solicitar información requerida por la web.
 
-## Requisitos de desarrollo
+## Requisitos
 
+### Para ejecutar la aplicación:
+- Sistema operativo compatible (Windows o Linux)
+- Permisos de ejecución para el archivo (`netsysacad` o `netsysacad.exe`)
+- Acceso a una instancia de **PostgreSQL** con la base de datos `DEV_SYSACAD`
+
+
+### Para compilar o desarrollar:
 - [.NET SDK](https://dotnet.microsoft.com/download)
-- [PostgreSQL](https://www.postgresql.org/download/)
-- [Visual Studio Code] con la extensión oficial de C# (OmniSharp)
-- Docker (opcional)
-- Git
+- Visual Studio o cualquier editor compatible con C# (por ejemplo, Visual Studio Code con la extensión de C#)
 
-## Instalación
+#### Actualizacion de los modelos de base de datos
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/CodeR4nger/SysAcad
-cd sysacad
-
-```bash
-#Migracion de la base de datos
 dotnet ef migrations add NombreNuevaMigracion
 dotnet ef database update
+```
+
+## Ejecución
+
+#### Windows 
+Ejecutar el archivo `netsysacad.exe`
+
+#### Linux
+1. Asegúrate de que el archivo tenga permisos de ejecución. Si no los tiene, asígnalos con:
+
+   ```bash
+   chmod +x netsysacad
+    ```
+2. Ejecuta el archivo directamente desde la terminal:
+   ```bash
+   ./netsysacad
+    ```
+## Desarrollador
+
+Esta aplicación fue desarrollada por:
+
+- Ignacio Bianchi – Desarrollo completo (backend, lógica de negocio, base de datos, documentación)

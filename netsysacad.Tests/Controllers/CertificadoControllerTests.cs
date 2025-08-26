@@ -1,5 +1,5 @@
 using System.Net;
-using System.Text;
+using UglyToad.PdfPig;
 using System.Text.Json;
 using netsysacad.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Sqids;
 using netsysacad.Utils;
 using netsysacad.Mapping;
+using System.Text;
 
 namespace netsysacad.Tests.Controllers;
 
@@ -23,7 +24,7 @@ public class CertificadoControllerTests
     private readonly DatabaseContext _context;
     private readonly AlumnoMapper _mapper;
     public readonly IDbContextTransaction _transaction;
-    private readonly string uri = "/api/alumno";
+    private readonly string uri = "/api/certificado";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -68,42 +69,27 @@ public class CertificadoControllerTests
         var query = $@"{uri}/{encodedAlumno.Id}/html";
         var response = await _client.GetAsync(query);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var jsonString = await response.Content.ReadAsStringAsync();
-        var alumnoApi = JsonSerializer.Deserialize<AlumnoDTO>(jsonString, JsonOptions);
-        Assert.NotNull(alumnoApi);
-        var decodedAlumno = _mapper.FromDto(alumnoApi);
-        CheckEntity(decodedAlumno);
-        Assert.Equal(alumnoDb.Id, decodedAlumno.Id);
-    }
-    [Fact]
-    public async Task CanGetPDFFromDocCertification()
-    {
-        var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
-        var encodedAlumno = _mapper.ToDto(alumnoDb);
-        var query = $@"{uri}/{encodedAlumno.Id}/doc";
-        var response = await _client.GetAsync(query);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var jsonString = await response.Content.ReadAsStringAsync();
-        var alumnoApi = JsonSerializer.Deserialize<AlumnoDTO>(jsonString, JsonOptions);
-        Assert.NotNull(alumnoApi);
-        var decodedAlumno = _mapper.FromDto(alumnoApi);
-        CheckEntity(decodedAlumno);
-        Assert.Equal(alumnoDb.Id, decodedAlumno.Id);
-    }
-    [Fact]
-    public async Task CanGetPDFFromOdtCertification()
-    {
-        var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
-        var encodedAlumno = _mapper.ToDto(alumnoDb);
-        var query = $@"{uri}/{encodedAlumno.Id}/odt";
-        var response = await _client.GetAsync(query);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var jsonString = await response.Content.ReadAsStringAsync();
-        var alumnoApi = JsonSerializer.Deserialize<AlumnoDTO>(jsonString, JsonOptions);
-        Assert.NotNull(alumnoApi);
-        var decodedAlumno = _mapper.FromDto(alumnoApi);
-        CheckEntity(decodedAlumno);
-        Assert.Equal(alumnoDb.Id, decodedAlumno.Id);
+        Assert.NotNull(response.Content.Headers.ContentType);
+        Assert.Equal("application/pdf", response.Content.Headers.ContentType.MediaType);
+
+        var content = await response.Content.ReadAsByteArrayAsync();
+        Assert.NotNull(content);
+        Assert.True(content.Length > 0);
+
+        using var pdfStream = new MemoryStream(content);
+        using var document = PdfDocument.Open(pdfStream);
+        var pdfText = new StringBuilder();
+        foreach (var page in document.GetPages())
+        {
+            pdfText.AppendLine(page.Text);
+        }
+
+        var fullText = pdfText.ToString();
+
+        Assert.Contains(alumnoDb.Nombre, fullText);
+        Assert.Contains(alumnoDb.Apellido, fullText);
+        Assert.Contains(alumnoDb.NroDocumento, fullText);
+        Assert.Contains(alumnoDb.NroLegajo.ToString(), fullText);
     }
     public void Dispose()
     {

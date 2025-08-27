@@ -27,15 +27,33 @@ public class AlumnoController(DatabaseContext dbContext,SqidsEncoder<int> sqids)
     [HttpGet]
     public IActionResult GetAll()
     {
-        int? page = Request.Headers.TryGetValue("X-Page", out var pageStr) && int.TryParse(pageStr, out var parsedPage) && parsedPage > 0
-            ? parsedPage
-            : null;
-        int? perPage = Request.Headers.TryGetValue("X-Per-Page", out var perPageStr) && int.TryParse(perPageStr, out var parsedPerPage) && parsedPerPage > 0
-            ? parsedPerPage
-            : null;
-        string? serializedFilters = Request.Headers.TryGetValue("X-Filter", out var filterStr)
-            ? filterStr.ToString() 
-            : null;
+        int? page;
+        if (Request.Headers.TryGetValue("X-Page", out var pageStr) && int.TryParse(pageStr, out var parsedPage) && parsedPage > 0)
+        {
+            page = parsedPage;
+        }
+        else
+        {
+            page = null;
+        }
+        int? perPage;
+        if (Request.Headers.TryGetValue("X-Page", out var perPageStr) && int.TryParse(perPageStr, out var parsedPerPage) && parsedPerPage > 0)
+        {
+            perPage = parsedPerPage;
+        }
+        else
+        {
+            perPage = null;
+        }
+        string? serializedFilters;
+        if (Request.Headers.TryGetValue("X-Filter", out var filterStr))
+        {
+            serializedFilters = filterStr.ToString();
+        }
+        else
+        {
+            serializedFilters = null;
+        }
         List<ApiFilter>? filters = ApiFilterMapper.DecodeFilter(serializedFilters);
         List<Alumno> alumnos;
         if ((page.HasValue && perPage.HasValue) || (filters != null && filters.Count != 0))

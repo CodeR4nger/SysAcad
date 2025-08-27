@@ -1,9 +1,10 @@
+using System.Text.Json;
 using PdfSharpCore.Pdf;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace netsysacad.Utils;
 
-public static class PdfHtml
+public static class HtmlConverter
 {
     public static byte[] ConvertHtmlToPdf(string html)
     {

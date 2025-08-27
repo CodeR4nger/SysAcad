@@ -58,4 +58,18 @@ public class AlumnoMapper
             FechaIngreso = dto.FechaIngreso
         };
     }
+    public string ToHTMLTable(Alumno alumno)
+    {
+        return
+        $@"<table>
+            <tr><td>Nombre</td><td>{alumno.Nombre}</td></tr>
+            <tr><td>Apellido</td><td>{alumno.Apellido}</td></tr>
+            <tr><td>Sexo</td><td>{alumno.Sexo}</td></tr>
+            <tr><td>Ingreso</td><td>{alumno.FechaIngreso.ToLongDateString()}</td></tr>
+            <tr><td>Tipo de documento</td><td>{alumno.TipoDocumento}</td></tr>
+            <tr><td>Documento</td><td>{alumno.NroDocumento}</td></tr>
+            <tr><td>Legajo</td><td>{alumno.NroLegajo}</td></tr>
+        </table>
+        ";
+    }
 }

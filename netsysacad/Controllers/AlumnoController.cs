@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using netsysacad.Mapping;
 using Sqids;
 using netsysacad.Utils;
+using System.Text.Json;
 
 namespace netsysacad.Controllers;
 
@@ -75,6 +76,17 @@ public class AlumnoController(DatabaseContext dbContext,SqidsEncoder<int> sqids)
         if (alumno == null)
             return NotFound();
         return Ok(_mapper.ToDto(alumno));
+    }
+    [HttpGet("{id}/pdf")]
+    public IActionResult GetPDF(string id)
+    {
+        var dbId = _mapper.DecodeId(id);
+        var alumno = _service.SearchById(dbId);
+        if (alumno == null)
+            return NotFound();
+        var alumnoDTO = _mapper.ToDto(alumno);
+        var file = HtmlConverter.ConvertHtmlToPdf(_mapper.ToHTMLTable(alumno));
+        return File(file, "application/pdf", $@"{alumnoDTO.Id}.pdf");
     }
     [HttpPut("{id}")]
     public IActionResult Put(string id, [FromBody] AlumnoDTO updatedAlumno)

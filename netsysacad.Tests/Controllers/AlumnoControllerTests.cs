@@ -9,6 +9,7 @@ using netsysacad.Tests.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using netsysacad.Data;
 using Microsoft.EntityFrameworkCore.Storage;
+using UglyToad.PdfPig;
 using Sqids;
 using netsysacad.Utils;
 using netsysacad.Mapping;
@@ -144,6 +145,38 @@ public class AlumnoControllerTests
         var decodedAlumno = _mapper.FromDto(alumnoApi);
         CheckEntity(decodedAlumno);
         Assert.Equal(alumnoDb.Id, decodedAlumno.Id);
+    }
+    private string GetPDFResponseText(byte[] content)
+    {
+        using var pdfStream = new MemoryStream(content);
+        using var document = PdfDocument.Open(pdfStream);
+        var pdfText = new StringBuilder();
+        foreach (var page in document.GetPages())
+        {
+            pdfText.AppendLine(page.Text);
+        }
+        return pdfText.ToString();
+    }
+    [Fact]
+    public async Task CanGetEntityPDF()
+    {
+        var alumnoDb = _service.Create(TestDataFactory.CreateAlumno());
+        var encodedAlumno = _mapper.ToDto(alumnoDb);
+        var query = String.Concat(uri, "/", encodedAlumno.Id, "/", "pdf");
+        var response = await _client.GetAsync(query);
+        Assert.NotNull(response.Content.Headers.ContentType);
+        Assert.Equal("application/pdf", response.Content.Headers.ContentType.MediaType);
+
+        var content = await response.Content.ReadAsByteArrayAsync();
+        Assert.NotNull(content);
+        Assert.True(content.Length > 0);
+
+        var pdfText = GetPDFResponseText(content);
+        
+        Assert.Contains(alumnoDb.Nombre, pdfText);
+        Assert.Contains(alumnoDb.Apellido, pdfText);
+        Assert.Contains(alumnoDb.NroDocumento, pdfText);
+        Assert.Contains(alumnoDb.NroLegajo.ToString(), pdfText);
     }
     [Fact]
     public async Task CanUpdateEntity()

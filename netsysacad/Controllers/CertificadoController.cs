@@ -30,7 +30,7 @@ public class CertificadoController(DatabaseContext dbContext,SqidsEncoder<int> s
                    .Replace("{{alumno.tipo_documento.sigla}}",alumno.TipoDocumento.ToString())
                    .Replace("{{alumno.nrodocumento}}",alumno.NroDocumento)
                    .Replace("{{alumno.nro_legajo}}",alumno.NroLegajo.ToString());
-        var file = PdfHtml.ConvertHtmlToPdf(html);
+        var file = HtmlConverter.ConvertHtmlToPdf(html);
         return File(file, "application/pdf", "certificado.pdf");
     }
 }

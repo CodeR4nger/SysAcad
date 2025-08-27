@@ -49,18 +49,6 @@ public class CertificadoControllerTests
         _mapper = new AlumnoMapper(encoder);
 
     }
-    private static void CheckEntity(Alumno alumno)
-    {
-        Assert.NotNull(alumno);
-        Assert.Equal("Gomez", alumno.Apellido);
-        Assert.Equal("Juan", alumno.Nombre);
-        Assert.Equal("12345678", alumno.NroDocumento);
-        Assert.Equal(TipoDocumento.DNI, alumno.TipoDocumento);
-        Assert.Equal("2000-01-01", alumno.FechaNacimiento);
-        Assert.Equal("M", alumno.Sexo);
-        Assert.Equal(1001, alumno.NroLegajo);
-        Assert.Equal(new DateTime(2020, 3, 1), alumno.FechaIngreso);
-    }
     [Fact]
     public async Task CanGetPDFFromHTMLCertification()
     {

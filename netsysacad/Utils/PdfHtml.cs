@@ -1,6 +1,5 @@
-using PdfSharpCore;
 using PdfSharpCore.Pdf;
-using TheArtOfDev.HtmlRenderer.PdfSharpCore;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace netsysacad.Utils;
 
@@ -8,10 +7,10 @@ public static class PdfHtml
 {
     public static byte[] ConvertHtmlToPdf(string html)
     {
-        var document = new PdfDocument();
-        PdfGenerator.AddPdfPages(document, html, PageSize.A4);
+        PdfDocument pdf = PdfGenerator.GeneratePdf(html, PdfSharpCore.PageSize.A4);
         using var stream = new MemoryStream();
-        document.Save(stream, false);
+        pdf.Save(stream, false);
+        stream.Position = 0;
         return stream.ToArray();
     }
 }

@@ -4,6 +4,7 @@ using netsysacad.Services;
 using Microsoft.AspNetCore.Mvc;
 using netsysacad.Mapping;
 using Sqids;
+using netsysacad.Utils;
 
 namespace netsysacad.Controllers;
 
@@ -23,12 +24,13 @@ public class CertificadoController(DatabaseContext dbContext,SqidsEncoder<int> s
         var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "certificado_pdf.html");
         var html = System.IO.File.ReadAllText(templatePath);
 
-        html = html.Replace("{{alumno.nombre}}", alumno.Nombre)
+        html = html.Replace("{{fecha}}", DateTime.Now.ToLongDateString())
+                   .Replace("{{alumno.nombre}}", alumno.Nombre)
                    .Replace("{{alumno.apellido}}", alumno.Apellido)
                    .Replace("{{alumno.tipo_documento.sigla}}",alumno.TipoDocumento.ToString())
                    .Replace("{{alumno.nrodocumento}}",alumno.NroDocumento)
                    .Replace("{{alumno.nro_legajo}}",alumno.NroLegajo.ToString());
-
-        return File(pdf, "application/pdf", "certificado.pdf");
+        var file = PdfHtml.ConvertHtmlToPdf(html);
+        return File(file, "application/pdf", "certificado.pdf");
     }
 }
